@@ -474,6 +474,43 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
   };
 }
 
+<<<<<<< HEAD
+=======
+export interface ApiCareerCareer extends Struct.CollectionTypeSchema {
+  collectionName: 'careers';
+  info: {
+    displayName: 'Career';
+    pluralName: 'careers';
+    singularName: 'career';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    category: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    duration: Schema.Attribute.String;
+    isOpen: Schema.Attribute.Boolean;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::career.career'
+    > &
+      Schema.Attribute.Private;
+    mode: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    stipend: Schema.Attribute.BigInteger;
+    tags: Schema.Attribute.JSON;
+    title: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+>>>>>>> 1ad52b74d5fdc072d044ca6a86e8dbe483386874
 export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   collectionName: 'categories';
   info: {
@@ -538,6 +575,67 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   };
 }
 
+<<<<<<< HEAD
+=======
+export interface ApiImagesSiteImagesSite extends Struct.CollectionTypeSchema {
+  collectionName: 'images_sites';
+  info: {
+    displayName: 'Images-site';
+    pluralName: 'images-sites';
+    singularName: 'images-site';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    Image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::images-site.images-site'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiNewsletterSubscriberNewsletterSubscriber
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'newsletter_subscribers';
+  info: {
+    displayName: 'NewsletterSubscriber';
+    pluralName: 'newsletter-subscribers';
+    singularName: 'newsletter-subscriber';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::newsletter-subscriber.newsletter-subscriber'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+>>>>>>> 1ad52b74d5fdc072d044ca6a86e8dbe483386874
 export interface PluginContentReleasesRelease
   extends Struct.CollectionTypeSchema {
   collectionName: 'strapi_releases';
@@ -1050,8 +1148,14 @@ declare module '@strapi/strapi' {
       'api::about.about': ApiAboutAbout;
       'api::article.article': ApiArticleArticle;
       'api::author.author': ApiAuthorAuthor;
+      'api::career.career': ApiCareerCareer;
       'api::category.category': ApiCategoryCategory;
       'api::global.global': ApiGlobalGlobal;
+<<<<<<< HEAD
+=======
+      'api::images-site.images-site': ApiImagesSiteImagesSite;
+      'api::newsletter-subscriber.newsletter-subscriber': ApiNewsletterSubscriberNewsletterSubscriber;
+>>>>>>> 1ad52b74d5fdc072d044ca6a86e8dbe483386874
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
