@@ -474,8 +474,6 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
   };
 }
 
-<<<<<<< HEAD
-=======
 export interface ApiCareerCareer extends Struct.CollectionTypeSchema {
   collectionName: 'careers';
   info: {
@@ -510,7 +508,6 @@ export interface ApiCareerCareer extends Struct.CollectionTypeSchema {
   };
 }
 
->>>>>>> 1ad52b74d5fdc072d044ca6a86e8dbe483386874
 export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   collectionName: 'categories';
   info: {
@@ -575,8 +572,6 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   };
 }
 
-<<<<<<< HEAD
-=======
 export interface ApiImagesSiteImagesSite extends Struct.CollectionTypeSchema {
   collectionName: 'images_sites';
   info: {
@@ -635,7 +630,6 @@ export interface ApiNewsletterSubscriberNewsletterSubscriber
   };
 }
 
->>>>>>> 1ad52b74d5fdc072d044ca6a86e8dbe483386874
 export interface PluginContentReleasesRelease
   extends Struct.CollectionTypeSchema {
   collectionName: 'strapi_releases';
@@ -1151,11 +1145,8 @@ declare module '@strapi/strapi' {
       'api::career.career': ApiCareerCareer;
       'api::category.category': ApiCategoryCategory;
       'api::global.global': ApiGlobalGlobal;
-<<<<<<< HEAD
-=======
       'api::images-site.images-site': ApiImagesSiteImagesSite;
       'api::newsletter-subscriber.newsletter-subscriber': ApiNewsletterSubscriberNewsletterSubscriber;
->>>>>>> 1ad52b74d5fdc072d044ca6a86e8dbe483386874
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

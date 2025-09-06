@@ -36,14 +36,12 @@ async function isFirstRun() {
 }
 
 async function setPublicPermissions(newPermissions) {
-  // Find the ID of the public role
   const publicRole = await strapi.query('plugin::users-permissions.role').findOne({
     where: {
       type: 'public',
     },
   });
 
-  // Create the new permissions and link them to the public role
   const allPermissionsToCreate = [];
   Object.keys(newPermissions).map((controller) => {
     const actions = newPermissions[controller];
@@ -97,10 +95,9 @@ async function uploadFile(file, name) {
     });
 }
 
-// Create an entry and attach files if there are any
 async function createEntry({ model, entry }) {
   try {
-    // Actually create the entry in Strapi
+    // @ts-ignore
     await strapi.documents(`api::${model}.${model}`).create({
       data: entry,
     });
@@ -115,7 +112,6 @@ async function checkFileExistsBeforeUpload(files) {
   const filesCopy = [...files];
 
   for (const fileName of filesCopy) {
-    // Check if the file already exists in Strapi
     const fileWhereName = await strapi.query('plugin::upload.file').findOne({
       where: {
         name: fileName.replace(/\..*$/, ''),
@@ -123,10 +119,8 @@ async function checkFileExistsBeforeUpload(files) {
     });
 
     if (fileWhereName) {
-      // File exists, don't upload it
       existingFiles.push(fileWhereName);
     } else {
-      // File doesn't exist, upload it
       const fileData = getFileData(fileName);
       const fileNameNoExtension = fileName.split('.').shift();
       const [file] = await uploadFile(fileData, fileNameNoExtension);
@@ -134,7 +128,6 @@ async function checkFileExistsBeforeUpload(files) {
     }
   }
   const allFiles = [...existingFiles, ...uploadedFiles];
-  // If only one file then return only that file
   return allFiles.length === 1 ? allFiles[0] : allFiles;
 }
 
@@ -143,22 +136,15 @@ async function updateBlocks(blocks) {
   for (const block of blocks) {
     if (block.__component === 'shared.media') {
       const uploadedFiles = await checkFileExistsBeforeUpload([block.file]);
-      // Copy the block to not mutate directly
       const blockCopy = { ...block };
-      // Replace the file name on the block with the actual file
       blockCopy.file = uploadedFiles;
       updatedBlocks.push(blockCopy);
     } else if (block.__component === 'shared.slider') {
-      // Get files already uploaded to Strapi or upload new files
       const existingAndUploadedFiles = await checkFileExistsBeforeUpload(block.files);
-      // Copy the block to not mutate directly
       const blockCopy = { ...block };
-      // Replace the file names on the block with the actual files
       blockCopy.files = existingAndUploadedFiles;
-      // Push the updated block
       updatedBlocks.push(blockCopy);
     } else {
-      // Just push the block as is
       updatedBlocks.push(block);
     }
   }
@@ -177,7 +163,6 @@ async function importArticles() {
         ...article,
         cover,
         blocks: updatedBlocks,
-        // Make sure it's not a draft
         publishedAt: Date.now(),
       },
     });
@@ -210,7 +195,6 @@ async function importAbout() {
     entry: {
       ...about,
       blocks: updatedBlocks,
-      // Make sure it's not a draft
       publishedAt: Date.now(),
     },
   });
@@ -237,16 +221,16 @@ async function importAuthors() {
 }
 
 async function importSeedData() {
-  // Allow read of application content types
   await setPublicPermissions({
     article: ['find', 'findOne'],
     category: ['find', 'findOne'],
     author: ['find', 'findOne'],
     global: ['find', 'findOne'],
     about: ['find', 'findOne'],
+    'newsletter-subscriber': ['create'],
+    'images-site': ['find', 'findOne'],
   });
 
-  // Create all entries
   await importCategories();
   await importAuthors();
   await importArticles();
