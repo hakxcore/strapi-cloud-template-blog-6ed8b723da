@@ -1,0 +1,33 @@
+version: "3"
+services:
+  strapi:
+    container_name: strapi
+    build: .
+    image: strapi:prod
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+    ports:
+      - "1339:1339"
+    depends_on:
+      - strapiDB
+    volumes:
+      - ./public/uploads:/opt/app/public/uploads
+
+  strapiDB:
+    container_name: strapiDB
+    image: postgres:16.0-alpine
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - strapi-data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+
+volumes:
+  strapi-data:
