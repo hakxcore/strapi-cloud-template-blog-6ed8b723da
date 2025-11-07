@@ -6,18 +6,35 @@ module.exports = {
     strapi.log.info('Newsletter subscriber afterCreate event triggered');
     strapi.log.info('Event data:', JSON.stringify(event, null, 2));
     strapi.log.info('Event result:', JSON.stringify(event.result, null, 2));
-    
-    const { email } = event.result;
-    
+
+    const { id, email } = event.result;
+
+
     // Log the extracted email
     strapi.log.info(`Extracted email from event: "${email}"`);
     strapi.log.info(`Email type: ${typeof email}`);
-    
+
     if (!email) {
       strapi.log.error('No email found in event.result');
       return;
     }
-    
+    if (process.env.NODE_ENV !== "production") {
+      strapi.log.info(`Newsletter email skipped in ${process.env.NODE_ENV} mode`);
+      return;
+    }
+
+    // ✅ Check if email already sent
+    const record = await strapi.entityService.findOne(
+      'api::newsletter-subscriber.newsletter-subscriber',
+      id,
+      { fields: ['emailSent'] }
+    );
+
+    if (record?.emailSent) {
+      strapi.log.warn(`Email already sent to ${email}, skipping`);
+      return;
+    }
+
     // Log the attempt
     strapi.log.info(`Attempting to send confirmation email to: ${email}`);
 
@@ -43,9 +60,9 @@ module.exports = {
       greetingTimeout: 5000,
       socketTimeout: 10000,
       // Add pool settings for better delivery
-      pool: true,
-      maxConnections: 5,
-      maxMessages: 10,
+      // pool: true,
+      // maxConnections: 5,
+      // maxMessages: 10,
       // Add DKIM and other headers for better deliverability
       dkim: {
         domainName: 'hakxcore.io',
@@ -131,23 +148,31 @@ If you didn't subscribe, please ignore this email.`,
     try {
       strapi.log.info(`Sending email with improved headers to: ${email}`);
       const info = await transporter.sendMail(mailOptions);
-      
+
       strapi.log.info(`✅ EMAIL SENT SUCCESSFULLY!`);
       strapi.log.info(`📧 Recipient: ${email}`);
       strapi.log.info(`📨 Message ID: ${info.messageId}`);
       strapi.log.info(`📬 Response: ${info.response}`);
       strapi.log.info(`🎯 Accepted: ${JSON.stringify(info.accepted)}`);
       strapi.log.info(`❌ Rejected: ${JSON.stringify(info.rejected)}`);
-      
+
+      await strapi.entityService.update(
+        "api::newsletter-subscriber.newsletter-subscriber",
+        id,
+        { data: { emailSent: true } }
+      );
+
+      strapi.log.info(`emailSent flag updated for ${email}`);
+
       if (info.rejected && info.rejected.length > 0) {
         strapi.log.error(`Some recipients were rejected: ${JSON.stringify(info.rejected)}`);
       }
-      
+
       // Log additional delivery info if available
       if (info.envelope) {
         strapi.log.info(`📮 Envelope: ${JSON.stringify(info.envelope)}`);
       }
-      
+
     } catch (err) {
       strapi.log.error('❌ ERROR SENDING CONFIRMATION EMAIL:', err.message);
       strapi.log.error('Error details:', {
@@ -157,7 +182,7 @@ If you didn't subscribe, please ignore this email.`,
         responseCode: err.responseCode,
         stack: err.stack,
       });
-      
+
       // Try to determine the specific issue
       if (err.code === 'ENOTFOUND') {
         strapi.log.error('DNS resolution failed - check MAIL_HOST setting');
