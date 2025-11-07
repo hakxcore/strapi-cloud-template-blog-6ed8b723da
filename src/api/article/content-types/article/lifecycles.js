@@ -14,7 +14,7 @@ module.exports = {
     const transporter = nodemailer.createTransport({
       host: process.env.MAIL_HOST,
       port: parseInt(process.env.MAIL_PORT, 10),
-      secure: process.env.MAIL_PORT === '465', 
+      secure: process.env.MAIL_PORT === '465',
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASSWORD,
@@ -23,7 +23,8 @@ module.exports = {
 
     // Build canonical article URL
     const siteBaseUrl = process.env.FRONTEND_BASE_URL || 'https://blog.hakxcore.io';
-    const articleUrl = `https://blog.hakxcore.io`;
+    const articleSlug = article.slug || article.url || "";
+    const articleUrl = `${siteBaseUrl}/${articleSlug}`;
 
     // Send email to each subscriber
     for (const subscriber of subscribers) {
