@@ -13,6 +13,10 @@
   "attributes": {
     "email": {
       "type": "email"
-    }
+    },
+    "emailSent": {
+    "type": "boolean",
+    "default": false
+  }
   }
 }
