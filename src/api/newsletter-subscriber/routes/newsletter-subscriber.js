@@ -1,9 +1,11 @@
-'use strict';
+"use strict";
 
-/**
- * newsletter-subscriber router
- */
+const { createCoreRouter } = require("@strapi/strapi").factories;
 
-const { createCoreRouter } = require('@strapi/strapi').factories;
-
-module.exports = createCoreRouter('api::newsletter-subscriber.newsletter-subscriber');
+module.exports = createCoreRouter("api::newsletter-subscriber.newsletter-subscriber", {
+  config: {
+    find: { auth: false },
+    findOne: { auth: false },
+    create: { auth: false } // allow frontend to subscribe
+  }
+});
