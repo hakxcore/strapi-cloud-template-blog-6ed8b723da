@@ -7,6 +7,12 @@ module.exports = {
     strapi.log.info('Event data:', JSON.stringify(event, null, 2));
     strapi.log.info('Event result:', JSON.stringify(event.result, null, 2));
 
+    if (event.params?.data && event.params?.data?.publishedAt !== null) {
+      strapi.log.info('Skip email: Admin publish/update triggered');
+      return;
+    }
+
+
     const { id, email } = event.result;
 
 
@@ -18,10 +24,10 @@ module.exports = {
       strapi.log.error('No email found in event.result');
       return;
     }
-    if (process.env.NODE_ENV !== "production") {
-      strapi.log.info(`Newsletter email skipped in ${process.env.NODE_ENV} mode`);
-      return;
-    }
+    // if (process.env.NODE_ENV !== "production") {
+    //   strapi.log.info(`Newsletter email skipped in ${process.env.NODE_ENV} mode`);
+    //   return;
+    // }
 
     // ✅ Check if email already sent
     const record = await strapi.entityService.findOne(
@@ -80,6 +86,9 @@ module.exports = {
       return;
     }
 
+    const unsubscribeLink = `${process.env.STRAPI_URL}/api/newsletter-subscribers/unsubscribe?email=${email}`;
+
+
     // Email options with better deliverability
     const mailOptions = {
       from: `Hakxcore Blog <${process.env.MAIL_USER}>`,
@@ -129,7 +138,8 @@ If you didn't subscribe, please ignore this email.`,
           
           <p style="font-size: 12px; color: #999;">
             This email was sent because you subscribed to our newsletter.<br>
-            If you didn't subscribe, please ignore this email.
+            If you did not subscribe or no longer wish to receive emails, you may
+            <a href="${unsubscribeLink}" style="font-size: 12px; color: #999;">unsubscribe</a> here.
           </p>
         </div>
       `,

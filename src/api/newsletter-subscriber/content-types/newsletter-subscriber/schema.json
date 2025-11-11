@@ -12,11 +12,13 @@
   "pluginOptions": {},
   "attributes": {
     "email": {
-      "type": "email"
+      "type": "email",
+      "unique": true,
+      "required": true
     },
     "emailSent": {
-    "type": "boolean",
-    "default": false
-  }
+      "type": "boolean",
+      "default": false
+    }
   }
 }
