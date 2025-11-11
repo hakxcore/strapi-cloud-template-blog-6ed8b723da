@@ -86,7 +86,7 @@ module.exports = {
       return;
     }
 
-    const unsubscribeLink = `${process.env.STRAPI_URL || "http://localhost:1337"}/api/newsletter-subscribers/unsubscribe?email=${email}`;
+    const unsubscribeLink = `${process.env.STRAPI_URL}/api/newsletter-subscribers/unsubscribe?email=${email}`;
 
 
     // Email options with better deliverability
