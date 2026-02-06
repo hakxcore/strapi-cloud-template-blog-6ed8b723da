@@ -4,7 +4,11 @@ module.exports = {
   async afterCreate(event) {
     const article = event.result;
 
-    // ✅ Fetch full article with category populated
+    if (article.publishedAt === null) {
+      strapi.log.info("⏳ Article created as draft → No email sent.");
+      return;
+    }
+
     const fullArticle = await strapi.entityService.findOne(
       'api::article.article',
       article.id,
@@ -20,13 +24,13 @@ module.exports = {
 
     strapi.log.info(`📎 Blog URL generated: ${articleUrl}`);
 
-    // ✅ Fetch all newsletter subscribers
+    // Fetch all newsletter subscribers
     const subscribers = await strapi.entityService.findMany(
       'api::newsletter-subscriber.newsletter-subscriber',
       { fields: ['email'] }
     );
 
-    // ✅ Setup transporter
+    // nodemailer transporter
     const transporter = nodemailer.createTransport({
       host: process.env.MAIL_HOST,
       port: parseInt(process.env.MAIL_PORT, 10),
@@ -35,6 +39,10 @@ module.exports = {
     });
 
     for (const subscriber of subscribers) {
+
+      const unsubscribeUrl =
+        `${process.env.STRAPI_URL}/api/newsletter-subscribers/unsubscribe-article?email=${subscriber.email}`;
+
       const mailOptions = {
         from: `Hakxcore Blog <${process.env.MAIL_USER}>`,
         to: subscriber.email,
@@ -53,7 +61,7 @@ module.exports = {
             Read the article</a>
           </div>
           <p style="font-size:12px;color:#999;">
-            To stop receiving updates, <a href="https://blog.hakxcore.io/unsubscribe?email=${subscriber.email}">unsubscribe</a>.
+            To stop receiving updates,  <a href="${unsubscribeUrl}">unsubscribe</a>.
           </p>
         </div>`,
       };
