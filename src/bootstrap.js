@@ -230,6 +230,7 @@ async function importSeedData() {
     global: ['find', 'findOne'],
     about: ['find', 'findOne'],
     'newsletter-subscriber': ['create'],
+    'waiting-list-entry': ['create'],
     'images-site': ['find', 'findOne'],
   });
 

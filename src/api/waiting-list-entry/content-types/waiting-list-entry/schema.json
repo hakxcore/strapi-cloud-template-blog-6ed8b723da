@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "waiting_list_entries",
+  "info": {
+    "singularName": "waiting-list-entry",
+    "pluralName": "waiting-list-entries",
+    "displayName": "WaitingListEntry",
+    "description": "Stores users who joined the Adjactive dashboard waiting list"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "email": {
+      "type": "email",
+      "required": true,
+      "unique": true
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "tier": {
+      "type": "enumeration",
+      "enum": ["free", "pro"],
+      "required": true,
+      "default": "free"
+    },
+    "oidcSub": {
+      "type": "string",
+      "unique": true
+    },
+    "source": {
+      "type": "string"
+    }
+  }
+}
+
